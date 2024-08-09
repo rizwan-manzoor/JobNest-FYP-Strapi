@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "skills",
+  "info": {
+    "singularName": "skill",
+    "pluralName": "skills",
+    "displayName": "Skill",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "jobSeekerSkill": {
+      "type": "string"
+    },
+    "job_seeker": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::job-seeker.job-seeker",
+      "inversedBy": "skills"
+    }
+  }
+}

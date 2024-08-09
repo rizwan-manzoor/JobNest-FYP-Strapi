@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "job_seekers",
+  "info": {
+    "singularName": "job-seeker",
+    "pluralName": "job-seekers",
+    "displayName": "JobSeeker",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "cv": {
+      "type": "string"
+    },
+    "dob": {
+      "type": "date"
+    },
+    "about": {
+      "type": "string"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user",
+      "mappedBy": "job_seeker"
+    },
+    "skills": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::skill.skill",
+      "mappedBy": "job_seeker"
+    }
+  }
+}

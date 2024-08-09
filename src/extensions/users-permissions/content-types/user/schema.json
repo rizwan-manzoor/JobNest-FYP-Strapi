@@ -84,6 +84,18 @@
     "type": {
       "type": "string",
       "default": "register"
+    },
+    "organization": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::organization.organization",
+      "inversedBy": "users_permissions_user"
+    },
+    "job_seeker": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::job-seeker.job-seeker",
+      "inversedBy": "users_permissions_user"
     }
   }
 }
