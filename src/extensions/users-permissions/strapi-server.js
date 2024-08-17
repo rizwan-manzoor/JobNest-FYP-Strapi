@@ -9,6 +9,9 @@ module.exports = (plugin) => {
     // Call the original register function to create the user
     await originalRegister(ctx);
 
+    // Check if a response has been sent already
+    if (ctx.status !== 200) return;
+
     // Extract the user's email or username from the request to find the user
     const { email, username, role: roleName } = ctx.request.body;
 
@@ -93,8 +96,14 @@ module.exports = (plugin) => {
       }
     }
 
-    // Return a success response or the user object as needed
-    return user;
+    // Refetch the user with updated Role and return updated user in response
+    const refetchedUser = await strapi.entityService.findOne(
+      "plugin::users-permissions.user",
+      user.id,
+      { populate: ["role"] }
+    );
+
+    ctx.response.body.user = refetchedUser ? refetchedUser : user;
   };
 
   // Reference to the original callback function
@@ -112,10 +121,10 @@ module.exports = (plugin) => {
     const userFromResponse = ctx.response.body.user;
 
     const user = await strapi.entityService.findOne(
-        'plugin::users-permissions.user',
-        userFromResponse.id,
-        { populate: ['role'] }
-      );
+      "plugin::users-permissions.user",
+      userFromResponse.id,
+      { populate: ["role"] }
+    );
 
     // Include the role in the response
     ctx.response.body.user.role = user.role ? user.role : null;
