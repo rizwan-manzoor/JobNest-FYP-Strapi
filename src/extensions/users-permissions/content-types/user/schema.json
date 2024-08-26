@@ -96,6 +96,12 @@
       "relation": "oneToOne",
       "target": "api::job-seeker.job-seeker",
       "inversedBy": "users_permissions_user"
+    },
+    "invitations": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::invitation.invitation",
+      "mappedBy": "users_permissions_users"
     }
   }
 }

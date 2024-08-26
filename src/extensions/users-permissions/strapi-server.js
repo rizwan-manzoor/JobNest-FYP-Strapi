@@ -52,7 +52,7 @@ module.exports = (plugin) => {
           data: {
             cv: "",
             about: "",
-            user: user.id,
+            users_permissions_user: user.id,
           },
         });
       } catch (error) {
@@ -81,7 +81,7 @@ module.exports = (plugin) => {
         description,
         createdDate,
         status: "on review",
-        user: user.id, // Link the user to the organization
+        users_permissions_user: user.id, // Link the user to the organization
       };
 
       // Save organization details in the 'organization' model
@@ -103,7 +103,14 @@ module.exports = (plugin) => {
       { populate: ["role"] }
     );
 
-    ctx.response.body.user = refetchedUser ? refetchedUser : user;
+    const {
+      confirmationToken,
+      password,
+      resetPasswordToken,
+      ...destructuredRefetchedUser
+    } = refetchedUser;
+
+    ctx.response.body.user = destructuredRefetchedUser || user;
   };
 
   // Reference to the original callback function
@@ -120,13 +127,36 @@ module.exports = (plugin) => {
     // Retrieve the user from the response
     const userFromResponse = ctx.response.body.user;
 
+    // Finding the organization using the .query() syntax
+    const organization = await strapi
+      .query("api::organization.organization")
+      .findOne({
+        where: { users_permissions_user: userFromResponse.id },
+      });
+
+    if (organization && organization.status !== "accepted") {
+      // Return a 400 response with the appropriate error message
+      ctx.response.status = 400;
+      ctx.response.body = {
+        data: null,
+        error: {
+          status: 400,
+          name: "ValidationError",
+          message:
+            "Your account is yet to be verified by admin as an organization account.",
+          details: {},
+        },
+      };
+      return;
+    }
+
+    // Include the role in the response
     const user = await strapi.entityService.findOne(
       "plugin::users-permissions.user",
       userFromResponse.id,
       { populate: ["role"] }
     );
 
-    // Include the role in the response
     ctx.response.body.user.role = user.role ? user.role : null;
   };
 

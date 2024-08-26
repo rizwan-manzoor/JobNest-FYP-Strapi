@@ -20,6 +20,12 @@
       "relation": "manyToOne",
       "target": "api::job-seeker.job-seeker",
       "inversedBy": "skills"
+    },
+    "job": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::job.job",
+      "inversedBy": "skills"
     }
   }
 }

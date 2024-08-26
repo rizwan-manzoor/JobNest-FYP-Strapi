@@ -362,159 +362,6 @@ export interface AdminTransferTokenPermission extends Schema.CollectionType {
   };
 }
 
-export interface ApiJobJob extends Schema.CollectionType {
-  collectionName: 'jobs';
-  info: {
-    singularName: 'job';
-    pluralName: 'jobs';
-    displayName: 'Job';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    organization: Attribute.Relation<
-      'api::job.job',
-      'manyToOne',
-      'api::organization.organization'
-    >;
-    position: Attribute.String;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<'api::job.job', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<'api::job.job', 'oneToOne', 'admin::user'> &
-      Attribute.Private;
-  };
-}
-
-export interface ApiJobSeekerJobSeeker extends Schema.CollectionType {
-  collectionName: 'job_seekers';
-  info: {
-    singularName: 'job-seeker';
-    pluralName: 'job-seekers';
-    displayName: 'JobSeeker';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    cv: Attribute.String;
-    dob: Attribute.Date;
-    about: Attribute.String;
-    users_permissions_user: Attribute.Relation<
-      'api::job-seeker.job-seeker',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    skills: Attribute.Relation<
-      'api::job-seeker.job-seeker',
-      'oneToMany',
-      'api::skill.skill'
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::job-seeker.job-seeker',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::job-seeker.job-seeker',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiOrganizationOrganization extends Schema.CollectionType {
-  collectionName: 'organizations';
-  info: {
-    singularName: 'organization';
-    pluralName: 'organizations';
-    displayName: 'Organization';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    phoneNumber: Attribute.String;
-    totalEmployee: Attribute.Integer;
-    industryType: Attribute.String;
-    address: Attribute.String;
-    description: Attribute.Text;
-    status: Attribute.String;
-    users_permissions_user: Attribute.Relation<
-      'api::organization.organization',
-      'oneToOne',
-      'plugin::users-permissions.user'
-    >;
-    jobs: Attribute.Relation<
-      'api::organization.organization',
-      'oneToMany',
-      'api::job.job'
-    >;
-    createdDate: Attribute.Date;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::organization.organization',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::organization.organization',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
-export interface ApiSkillSkill extends Schema.CollectionType {
-  collectionName: 'skills';
-  info: {
-    singularName: 'skill';
-    pluralName: 'skills';
-    displayName: 'Skill';
-    description: '';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    jobSeekerSkill: Attribute.String;
-    job_seeker: Attribute.Relation<
-      'api::skill.skill',
-      'manyToOne',
-      'api::job-seeker.job-seeker'
-    >;
-    createdAt: Attribute.DateTime;
-    updatedAt: Attribute.DateTime;
-    publishedAt: Attribute.DateTime;
-    createdBy: Attribute.Relation<
-      'api::skill.skill',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-    updatedBy: Attribute.Relation<
-      'api::skill.skill',
-      'oneToOne',
-      'admin::user'
-    > &
-      Attribute.Private;
-  };
-}
-
 export interface PluginUploadFile extends Schema.CollectionType {
   collectionName: 'files';
   info: {
@@ -940,6 +787,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
       'oneToOne',
       'api::job-seeker.job-seeker'
     >;
+    invitations: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'manyToMany',
+      'api::invitation.invitation'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -957,6 +809,343 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
   };
 }
 
+export interface ApiCategoryCategory extends Schema.CollectionType {
+  collectionName: 'categories';
+  info: {
+    singularName: 'category';
+    pluralName: 'categories';
+    displayName: 'Category';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    name: Attribute.String & Attribute.Required;
+    image: Attribute.String;
+    jobs: Attribute.Relation<
+      'api::category.category',
+      'oneToMany',
+      'api::job.job'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::category.category',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiInvitationInvitation extends Schema.CollectionType {
+  collectionName: 'invitations';
+  info: {
+    singularName: 'invitation';
+    pluralName: 'invitations';
+    displayName: 'Invitation';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    status: Attribute.String & Attribute.DefaultTo<'on review'>;
+    job: Attribute.Relation<
+      'api::invitation.invitation',
+      'manyToOne',
+      'api::job.job'
+    >;
+    users_permissions_users: Attribute.Relation<
+      'api::invitation.invitation',
+      'manyToMany',
+      'plugin::users-permissions.user'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::invitation.invitation',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::invitation.invitation',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiJobJob extends Schema.CollectionType {
+  collectionName: 'jobs';
+  info: {
+    singularName: 'job';
+    pluralName: 'jobs';
+    displayName: 'Job';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    organization: Attribute.Relation<
+      'api::job.job',
+      'manyToOne',
+      'api::organization.organization'
+    >;
+    position: Attribute.String;
+    invitations: Attribute.Relation<
+      'api::job.job',
+      'oneToMany',
+      'api::invitation.invitation'
+    >;
+    category: Attribute.Relation<
+      'api::job.job',
+      'manyToOne',
+      'api::category.category'
+    >;
+    jobLevel: Attribute.String;
+    employmentType: Attribute.String;
+    skills: Attribute.Relation<'api::job.job', 'oneToMany', 'api::skill.skill'>;
+    salary: Attribute.Integer;
+    overview: Attribute.Text;
+    requirements: Attribute.Text;
+    keywords: Attribute.Relation<
+      'api::job.job',
+      'oneToMany',
+      'api::keyword.keyword'
+    >;
+    jobs_applieds: Attribute.Relation<
+      'api::job.job',
+      'oneToMany',
+      'api::jobs-applied.jobs-applied'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<'api::job.job', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<'api::job.job', 'oneToOne', 'admin::user'> &
+      Attribute.Private;
+  };
+}
+
+export interface ApiJobSeekerJobSeeker extends Schema.CollectionType {
+  collectionName: 'job_seekers';
+  info: {
+    singularName: 'job-seeker';
+    pluralName: 'job-seekers';
+    displayName: 'JobSeeker';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    cv: Attribute.String;
+    dob: Attribute.Date;
+    about: Attribute.String;
+    users_permissions_user: Attribute.Relation<
+      'api::job-seeker.job-seeker',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    skills: Attribute.Relation<
+      'api::job-seeker.job-seeker',
+      'oneToMany',
+      'api::skill.skill'
+    >;
+    jobs_applieds: Attribute.Relation<
+      'api::job-seeker.job-seeker',
+      'oneToMany',
+      'api::jobs-applied.jobs-applied'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::job-seeker.job-seeker',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::job-seeker.job-seeker',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiJobsAppliedJobsApplied extends Schema.CollectionType {
+  collectionName: 'jobs_applieds';
+  info: {
+    singularName: 'jobs-applied';
+    pluralName: 'jobs-applieds';
+    displayName: 'JobsApplied';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    status: Attribute.String;
+    job: Attribute.Relation<
+      'api::jobs-applied.jobs-applied',
+      'manyToOne',
+      'api::job.job'
+    >;
+    job_seeker: Attribute.Relation<
+      'api::jobs-applied.jobs-applied',
+      'manyToOne',
+      'api::job-seeker.job-seeker'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::jobs-applied.jobs-applied',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::jobs-applied.jobs-applied',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiKeywordKeyword extends Schema.CollectionType {
+  collectionName: 'keywords';
+  info: {
+    singularName: 'keyword';
+    pluralName: 'keywords';
+    displayName: 'Keyword';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    jobKeyword: Attribute.String;
+    job: Attribute.Relation<
+      'api::keyword.keyword',
+      'manyToOne',
+      'api::job.job'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::keyword.keyword',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::keyword.keyword',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiOrganizationOrganization extends Schema.CollectionType {
+  collectionName: 'organizations';
+  info: {
+    singularName: 'organization';
+    pluralName: 'organizations';
+    displayName: 'Organization';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    phoneNumber: Attribute.String;
+    totalEmployee: Attribute.Integer;
+    industryType: Attribute.String;
+    address: Attribute.String;
+    description: Attribute.Text;
+    status: Attribute.String;
+    users_permissions_user: Attribute.Relation<
+      'api::organization.organization',
+      'oneToOne',
+      'plugin::users-permissions.user'
+    >;
+    jobs: Attribute.Relation<
+      'api::organization.organization',
+      'oneToMany',
+      'api::job.job'
+    >;
+    createdDate: Attribute.Date;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::organization.organization',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::organization.organization',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiSkillSkill extends Schema.CollectionType {
+  collectionName: 'skills';
+  info: {
+    singularName: 'skill';
+    pluralName: 'skills';
+    displayName: 'Skill';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    jobSeekerSkill: Attribute.String;
+    job_seeker: Attribute.Relation<
+      'api::skill.skill',
+      'manyToOne',
+      'api::job-seeker.job-seeker'
+    >;
+    job: Attribute.Relation<'api::skill.skill', 'manyToOne', 'api::job.job'>;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::skill.skill',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::skill.skill',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 declare module '@strapi/types' {
   export module Shared {
     export interface ContentTypes {
@@ -967,10 +1156,6 @@ declare module '@strapi/types' {
       'admin::api-token-permission': AdminApiTokenPermission;
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
-      'api::job.job': ApiJobJob;
-      'api::job-seeker.job-seeker': ApiJobSeekerJobSeeker;
-      'api::organization.organization': ApiOrganizationOrganization;
-      'api::skill.skill': ApiSkillSkill;
       'plugin::upload.file': PluginUploadFile;
       'plugin::upload.folder': PluginUploadFolder;
       'plugin::content-releases.release': PluginContentReleasesRelease;
@@ -979,6 +1164,14 @@ declare module '@strapi/types' {
       'plugin::users-permissions.permission': PluginUsersPermissionsPermission;
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
+      'api::category.category': ApiCategoryCategory;
+      'api::invitation.invitation': ApiInvitationInvitation;
+      'api::job.job': ApiJobJob;
+      'api::job-seeker.job-seeker': ApiJobSeekerJobSeeker;
+      'api::jobs-applied.jobs-applied': ApiJobsAppliedJobsApplied;
+      'api::keyword.keyword': ApiKeywordKeyword;
+      'api::organization.organization': ApiOrganizationOrganization;
+      'api::skill.skill': ApiSkillSkill;
     }
   }
 }

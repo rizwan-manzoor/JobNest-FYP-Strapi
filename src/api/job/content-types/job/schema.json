@@ -4,7 +4,8 @@
   "info": {
     "singularName": "job",
     "pluralName": "jobs",
-    "displayName": "Job"
+    "displayName": "Job",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -19,6 +20,51 @@
     },
     "position": {
       "type": "string"
+    },
+    "invitations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::invitation.invitation",
+      "mappedBy": "job"
+    },
+    "category": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "jobs"
+    },
+    "jobLevel": {
+      "type": "string"
+    },
+    "employmentType": {
+      "type": "string"
+    },
+    "skills": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::skill.skill",
+      "mappedBy": "job"
+    },
+    "salary": {
+      "type": "integer"
+    },
+    "overview": {
+      "type": "text"
+    },
+    "requirements": {
+      "type": "text"
+    },
+    "keywords": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::keyword.keyword",
+      "mappedBy": "job"
+    },
+    "jobs_applieds": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jobs-applied.jobs-applied",
+      "mappedBy": "job"
     }
   }
 }

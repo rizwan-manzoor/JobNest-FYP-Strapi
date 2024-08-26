@@ -32,6 +32,12 @@
       "relation": "oneToMany",
       "target": "api::skill.skill",
       "mappedBy": "job_seeker"
+    },
+    "jobs_applieds": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::jobs-applied.jobs-applied",
+      "mappedBy": "job_seeker"
     }
   }
 }

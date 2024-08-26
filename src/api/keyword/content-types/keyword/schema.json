@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "keywords",
+  "info": {
+    "singularName": "keyword",
+    "pluralName": "keywords",
+    "displayName": "Keyword"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "jobKeyword": {
+      "type": "string"
+    },
+    "job": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::job.job",
+      "inversedBy": "keywords"
+    }
+  }
+}

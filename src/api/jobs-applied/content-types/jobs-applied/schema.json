@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jobs_applieds",
+  "info": {
+    "singularName": "jobs-applied",
+    "pluralName": "jobs-applieds",
+    "displayName": "JobsApplied"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "status": {
+      "type": "string"
+    },
+    "job": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::job.job",
+      "inversedBy": "jobs_applieds"
+    },
+    "job_seeker": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::job-seeker.job-seeker",
+      "inversedBy": "jobs_applieds"
+    }
+  }
+}
