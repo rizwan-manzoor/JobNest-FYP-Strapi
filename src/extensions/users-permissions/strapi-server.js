@@ -154,10 +154,101 @@ module.exports = (plugin) => {
     const user = await strapi.entityService.findOne(
       "plugin::users-permissions.user",
       userFromResponse.id,
-      { populate: ["role"] }
+      { populate: ["role", "job_seeker", "organization"] }
     );
 
-    ctx.response.body.user.role = user.role ? user.role : null;
+    ctx.response.body.user.role = user.role || null;
+    ctx.response.body.user.organization = user.organization || null;
+    ctx.response.body.user.job_seeker = user.job_seeker || null;
+  };
+
+  // Save the original update controller function
+  const originalUpdate = plugin.controllers.user.update;
+
+  // Override the update controller function
+  plugin.controllers.user.update = async (ctx) => {
+    // Call the original register function to create the user
+    await originalUpdate(ctx);
+
+    // Check if a response has been sent already
+    if (ctx.status !== 200) return;
+
+    const { id } = ctx.params;
+    const { body } = ctx.request;
+
+    // Check if Jobseeker-specific fields are provided in the request
+    if (body.cv || body.dob || body.about || body.skills) {
+      // Find the related Jobseeker entry
+      const jobseeker = await strapi
+        .query("api::job-seeker.job-seeker")
+        .findOne({
+          where: { users_permissions_user: id },
+        });
+
+      // If the Jobseeker entry exists, update it
+      if (jobseeker) {
+        try {
+          // Update Jobseeker fields
+          await strapi.entityService.update(
+            "api::job-seeker.job-seeker",
+            jobseeker.id,
+            {
+              data: {
+                cv: body.cv,
+                dob: body.dob,
+                about: body.about,
+              },
+            }
+          );
+
+          // If skills are provided, update the related skills
+          if (body.skills && Array.isArray(body.skills)) {
+            // Step 1: Retrieve the skills related to the Jobseeker
+            const existingSkills = await strapi.entityService.findMany(
+              "api::skill.skill",
+              {
+                filters: { job_seeker: jobseeker.id },
+              }
+            );
+
+            // Step 2: Delete the existing skills
+            const deleteSkillPromises = existingSkills.map((skill) =>
+              strapi.entityService.delete("api::skill.skill", skill.id)
+            );
+            await Promise.all(deleteSkillPromises);
+
+            // Step 3: Create the new skills
+            const skillPromises = body.skills.map((skill) =>
+              strapi.entityService.create("api::skill.skill", {
+                data: {
+                  jobSeekerSkill: skill, // Assuming 'name' is the field for skill name
+                  job_seeker: jobseeker.id, // Link to the Jobseeker
+                },
+              })
+            );
+
+            // Wait for all skills to be created
+            await Promise.all(skillPromises);
+          }
+        } catch (error) {
+          // Handle any errors that may occur during job-seeker update action
+          strapi.log.error("Error updating the job seeker:", error);
+          ctx.throw(500, "Error updating job seeker");
+        }
+      }
+    }
+
+    // Fetch the updated user with Jobseeker details
+    const userWithDetails = await strapi.entityService.findOne(
+      "plugin::users-permissions.user",
+      id,
+      {
+        populate: ["role", "job_seeker", "organization"], // Adjust this to match your relation
+      }
+    );
+
+    // Return the updated user with Jobseeker details
+    ctx.response.body = userWithDetails;
   };
 
   return plugin;
