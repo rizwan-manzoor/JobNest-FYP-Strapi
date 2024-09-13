@@ -41,9 +41,9 @@
     },
     "skills": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::skill.skill",
-      "mappedBy": "job"
+      "mappedBy": "jobs"
     },
     "salary": {
       "type": "integer"
@@ -56,15 +56,21 @@
     },
     "keywords": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::keyword.keyword",
-      "mappedBy": "job"
+      "mappedBy": "jobs"
     },
     "jobs_applieds": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::jobs-applied.jobs-applied",
       "mappedBy": "job"
+    },
+    "expirationDate": {
+      "type": "date"
+    },
+    "experienceRequired": {
+      "type": "decimal"
     }
   }
 }

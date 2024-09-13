@@ -14,9 +14,9 @@
     "jobKeyword": {
       "type": "string"
     },
-    "job": {
+    "jobs": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::job.job",
       "inversedBy": "keywords"
     }

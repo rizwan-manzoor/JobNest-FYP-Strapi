@@ -915,13 +915,17 @@ export interface ApiJobJob extends Schema.CollectionType {
     >;
     jobLevel: Attribute.String;
     employmentType: Attribute.String;
-    skills: Attribute.Relation<'api::job.job', 'oneToMany', 'api::skill.skill'>;
+    skills: Attribute.Relation<
+      'api::job.job',
+      'manyToMany',
+      'api::skill.skill'
+    >;
     salary: Attribute.Integer;
     overview: Attribute.Text;
     requirements: Attribute.Text;
     keywords: Attribute.Relation<
       'api::job.job',
-      'oneToMany',
+      'manyToMany',
       'api::keyword.keyword'
     >;
     jobs_applieds: Attribute.Relation<
@@ -929,6 +933,8 @@ export interface ApiJobJob extends Schema.CollectionType {
       'oneToMany',
       'api::jobs-applied.jobs-applied'
     >;
+    expirationDate: Attribute.Date;
+    experienceRequired: Attribute.Decimal;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -1039,9 +1045,9 @@ export interface ApiKeywordKeyword extends Schema.CollectionType {
   };
   attributes: {
     jobKeyword: Attribute.String;
-    job: Attribute.Relation<
+    jobs: Attribute.Relation<
       'api::keyword.keyword',
-      'manyToOne',
+      'manyToMany',
       'api::job.job'
     >;
     createdAt: Attribute.DateTime;
@@ -1127,7 +1133,7 @@ export interface ApiSkillSkill extends Schema.CollectionType {
       'manyToOne',
       'api::job-seeker.job-seeker'
     >;
-    job: Attribute.Relation<'api::skill.skill', 'manyToOne', 'api::job.job'>;
+    jobs: Attribute.Relation<'api::skill.skill', 'manyToMany', 'api::job.job'>;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;

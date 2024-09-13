@@ -211,24 +211,36 @@ module.exports = (plugin) => {
               }
             );
 
-            // Step 2: Delete the existing skills
-            const deleteSkillPromises = existingSkills.map((skill) =>
-              strapi.entityService.delete("api::skill.skill", skill.id)
-            );
-            await Promise.all(deleteSkillPromises);
+            // Step 2: Find or create new skills, and map the skill IDs
+            const newSkillIds = await Promise.all(
+              body.skills.map(async (skillName) => {
+                // Look for an existing skill
+                let skill = await strapi.db
+                  .query("api::skill.skill")
+                  .findOne({ where: { jobSeekerSkill: skillName } });
 
-            // Step 3: Create the new skills
-            const skillPromises = body.skills.map((skill) =>
-              strapi.entityService.create("api::skill.skill", {
-                data: {
-                  jobSeekerSkill: skill, // Assuming 'name' is the field for skill name
-                  job_seeker: jobseeker.id, // Link to the Jobseeker
-                },
+                // If the skill does not exist, create it
+                if (!skill) {
+                  skill = await strapi.db
+                    .query("api::skill.skill")
+                    .create({ data: { jobSeekerSkill: skillName } });
+                }
+
+                return skill.id;
               })
             );
 
-            // Wait for all skills to be created
-            await Promise.all(skillPromises);
+            // Step 3: Update the relationship between job seeker and skills
+            // Ensure the new skills are linked to the job seeker, replacing the existing ones
+            await strapi.entityService.update(
+              "api::job-seeker.job-seeker",
+              jobseeker.id,
+              {
+                data: {
+                  skills: newSkillIds, // Update the relation with new skill IDs
+                },
+              }
+            );
           }
         } catch (error) {
           // Handle any errors that may occur during job-seeker update action
