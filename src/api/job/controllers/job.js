@@ -209,5 +209,38 @@ module.exports = createCoreController("api::job.job", ({ strapi }) => ({
     }
   },
 
+  async findOne(ctx) {
+    const { id } = ctx.params;
+
+    // Fetch the job and populate the 'organization' relation, but limit the fields
+
+    const job = await strapi.entityService.findOne("api::job.job", id, {
+      populate: {
+        organization: {
+          populate: {
+            users_permissions_user: {
+              fields: [
+                "id",
+                "avatar",
+                "username",
+                "email",
+                "province",
+                "city",
+                "district",
+                "postalCode",
+              ],
+            },
+          },
+        },
+        category: true,
+        keywords: true,
+        skills: true,
+      },
+    });
+
+    // Return the job object with the limited organization data
+    return job;
+  },
+
   // Other methods (e.g., find, findOne, create, delete) will use the default implementation
 }));
