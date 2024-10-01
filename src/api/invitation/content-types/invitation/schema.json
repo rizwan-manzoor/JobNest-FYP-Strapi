@@ -4,7 +4,8 @@
   "info": {
     "singularName": "invitation",
     "pluralName": "invitations",
-    "displayName": "Invitation"
+    "displayName": "Invitation",
+    "description": ""
   },
   "options": {
     "draftAndPublish": true
@@ -21,9 +22,9 @@
       "target": "api::job.job",
       "inversedBy": "invitations"
     },
-    "users_permissions_users": {
+    "users_permissions_user": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "manyToOne",
       "target": "plugin::users-permissions.user",
       "inversedBy": "invitations"
     }

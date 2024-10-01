@@ -99,9 +99,9 @@
     },
     "invitations": {
       "type": "relation",
-      "relation": "manyToMany",
+      "relation": "oneToMany",
       "target": "api::invitation.invitation",
-      "mappedBy": "users_permissions_users"
+      "mappedBy": "users_permissions_user"
     }
   }
 }

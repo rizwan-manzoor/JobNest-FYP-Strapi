@@ -789,7 +789,7 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     >;
     invitations: Attribute.Relation<
       'plugin::users-permissions.user',
-      'manyToMany',
+      'oneToMany',
       'api::invitation.invitation'
     >;
     createdAt: Attribute.DateTime;
@@ -851,6 +851,7 @@ export interface ApiInvitationInvitation extends Schema.CollectionType {
     singularName: 'invitation';
     pluralName: 'invitations';
     displayName: 'Invitation';
+    description: '';
   };
   options: {
     draftAndPublish: true;
@@ -862,9 +863,9 @@ export interface ApiInvitationInvitation extends Schema.CollectionType {
       'manyToOne',
       'api::job.job'
     >;
-    users_permissions_users: Attribute.Relation<
+    users_permissions_user: Attribute.Relation<
       'api::invitation.invitation',
-      'manyToMany',
+      'manyToOne',
       'plugin::users-permissions.user'
     >;
     createdAt: Attribute.DateTime;
