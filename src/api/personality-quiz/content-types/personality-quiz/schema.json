@@ -1,0 +1,24 @@
+{
+  "kind": "collectionType",
+  "collectionName": "personality_quizs",
+  "info": {
+    "singularName": "personality-quiz",
+    "pluralName": "personality-quizs",
+    "displayName": "PersonalityQuiz"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "quizURL": {
+      "type": "string"
+    },
+    "quizAttempted": {
+      "type": "json"
+    },
+    "quizResult": {
+      "type": "json"
+    }
+  }
+}

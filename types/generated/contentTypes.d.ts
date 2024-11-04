@@ -1116,6 +1116,39 @@ export interface ApiOrganizationOrganization extends Schema.CollectionType {
   };
 }
 
+export interface ApiPersonalityQuizPersonalityQuiz
+  extends Schema.CollectionType {
+  collectionName: 'personality_quizs';
+  info: {
+    singularName: 'personality-quiz';
+    pluralName: 'personality-quizs';
+    displayName: 'PersonalityQuiz';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    quizURL: Attribute.String;
+    quizAttempted: Attribute.JSON;
+    quizResult: Attribute.JSON;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::personality-quiz.personality-quiz',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::personality-quiz.personality-quiz',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiSkillSkill extends Schema.CollectionType {
   collectionName: 'skills';
   info: {
@@ -1178,6 +1211,7 @@ declare module '@strapi/types' {
       'api::jobs-applied.jobs-applied': ApiJobsAppliedJobsApplied;
       'api::keyword.keyword': ApiKeywordKeyword;
       'api::organization.organization': ApiOrganizationOrganization;
+      'api::personality-quiz.personality-quiz': ApiPersonalityQuizPersonalityQuiz;
       'api::skill.skill': ApiSkillSkill;
     }
   }
